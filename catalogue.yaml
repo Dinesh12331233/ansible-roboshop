@@ -14,7 +14,7 @@
       state: present 
 
   - name: create roboshop system user 
-    ansible.builtin.user:
+    ansible.builtin.user:  #user already create ayyi unte ansible will skip this.
       name: roboshop 
       shell: /sbin/nologin 
       home: /app 
@@ -30,11 +30,15 @@
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
       dest: /tmp/catalogue.zip 
 
+# this module thinks file exist on ansible control server, needs to extract onto remote machine(catalogue server).
+# remote_src: yes ----> file already exist in catalogue server.
   - name: extract catalogue code 
     ansible.builtin.unarchive: 
       src: /tmp/catalogue.zip 
       dest: /app 
-  
-                  
+      remote_src: yes   
+
+
+
 
 
