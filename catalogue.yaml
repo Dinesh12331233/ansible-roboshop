@@ -76,7 +76,7 @@
       msg: "{{ dataload_output }}" 
 
   - name: load products 
-    ansible.builtin.command: mongosh --host MONGODB-SERVER-IPADDRESS </app/db/master-data.js
+    ansible.builtin.command: mongosh --host mongodb.deepthi.tech </app/db/master-data.js
     when: catalogue_output.stdout | int < 0  
 
 
