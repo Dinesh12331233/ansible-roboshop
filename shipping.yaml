@@ -1,0 +1,38 @@
+- name: configuring shipping component 
+  hosts: shipping 
+  become: yes 
+  tasks: 
+  - name: install maven 
+    ansible.builtin.package: 
+      name: maven 
+      state: present 
+
+  - name: create system user 
+    ansible.builtin.user: 
+      name: roboshop 
+      shell: /sbin/nologin 
+      home: /app 
+      system: true 
+
+  - name: create app directory 
+    ansible.builtin.file: 
+      path: /app 
+      state: directory 
+
+  - name: download shipping code 
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+      dest: /tmp/shipping.zip 
+
+# this module thinks file exist on ansible control server, needs to extract onto remote machine(shipping server).
+# remote_src: yes ----> file already exist in shipping server.
+  - name: extract shipping code 
+    ansible.builtin.unarchive: 
+      src: /tmp/shipping.zip 
+      dest: /app 
+      remote_src: yes 
+
+  - name: install maven dependencies 
+    args:
+      chdir: /app       # /app ane directory loki velli command ni run chestundi.
+    ansible.builtin.command: mvn clean package     
