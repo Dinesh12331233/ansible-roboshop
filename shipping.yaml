@@ -82,7 +82,7 @@
     - import 
     community.mysql.mysql_db: 
       name: all 
-      login_user: shipping 
+      login_user: root 
       login_password: RoboShop@1 
       login_host: mysql.deepthi.tech 
       state: import 
@@ -93,6 +93,8 @@
     - /app/db/master-data.sql   
 
   - name: restart shipping 
+    tags: 
+    - import 
     ansible.builtin.service:
       name: shipping 
       state: restarted 
