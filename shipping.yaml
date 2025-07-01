@@ -35,4 +35,38 @@
   - name: install maven dependencies 
     args:
       chdir: /app       # /app ane directory loki velli command ni run chestundi.
-    ansible.builtin.command: mvn clean package     
+    ansible.builtin.command: mvn clean package   
+
+  - name: rename jar file 
+    args: 
+      chdir: /app 
+    ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar 
+
+  - name: copy shipping.service filr to remote machine 
+    ansible.builtin.copy: 
+      src: shipping.service 
+      dest: /etc/systemd/system/shipping.service 
+
+  - name: daemon reload service 
+    ansible.builtin.systemd_service: 
+      daemon_reload: true 
+
+  - name: start and enable shipping service 
+    ansible.builtin.service:
+      name: shipping 
+      state: started 
+      enabled: yes 
+
+  - name: install mysql client 
+    ansible.builtin.package: 
+      name: mysql 
+      state: present  
+
+  - name: connect to mysql using app user 
+    community.mysql.mysql_info: 
+      login_user: shipping 
+      login_password: RoboShop@1 
+      login_host: mysql.deepthi.tech 
+      login_db: cities 
+
+   
